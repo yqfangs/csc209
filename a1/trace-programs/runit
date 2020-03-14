@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# IMPORTANT: This shell program was written to work on the teach.cs machines
+#            It will not run on Windows or Mac machines, and may not run on 
+#            any other machines
+
+# Run valgrind on the program passed in as an argument and save the memory
+# reference trace to the file full-PROG, where PROG is the name of the 
+# program passed in as an argument.  Note that if PROG itself takes arguments
+# these will also be passed in as arguments to this shell script.
+
+# Example: ./runit heaploop 100
+#   This will produce an output file called full-heaploop
+
+# Notes: the arguments to valgrind and the bash syntax need a little explaining
+#   - the component of valgrind that produces the memory trace is called lackey
+#     we are telling it to produce the memory trace
+#   - the $* is a special shell variable that holds all the arguments to runit
+#   - 2>&1 tells the shell to redirect stderr to stdout. valgrind prints the
+#     memory trace output to stderr, but we want to pipe it into the next command
+#   - grep -v "==" - we pipe the output of valgrind to this command to get 
+#     rid of the comment lines in the trace file.
+#   - ">full-$1" - finally we send the output to a file.  The name of the file
+#     is "trfull-" followed by the name of the program we were tracing.
+
+valgrind   --tool=lackey --trace-mem=yes $* 2>&1 | grep -v "==" > full-$1.tr
+
